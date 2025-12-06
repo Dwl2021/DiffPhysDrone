@@ -333,7 +333,7 @@ void render_cuda(
     size_t state_size = canvas.numel();
     const dim3 blocks((state_size + threads - 1) / threads);
 
-    AT_DISPATCH_FLOATING_TYPES(canvas.type(), "render_cuda", ([&] {
+    AT_DISPATCH_FLOATING_TYPES(canvas.scalar_type(), "render_cuda", ([&] {
         render_cuda_kernel<scalar_t><<<blocks, threads>>>(
             canvas.packed_accessor<scalar_t,3,torch::RestrictPtrTraits,size_t>(),
             flow.packed_accessor<scalar_t,4,torch::RestrictPtrTraits,size_t>(),
@@ -359,7 +359,7 @@ void rerender_backward_cuda(
     size_t state_size = dddp.numel();
     const dim3 blocks((state_size + threads - 1) / threads);
 
-    AT_DISPATCH_FLOATING_TYPES(depth.type(), "rerender_backward_cuda", ([&] {
+    AT_DISPATCH_FLOATING_TYPES(depth.scalar_type(), "rerender_backward_cuda", ([&] {
         rerender_backward_cuda_kernel<scalar_t><<<blocks, threads>>>(
             depth.packed_accessor<scalar_t,4,torch::RestrictPtrTraits,size_t>(),
             dddp.packed_accessor<scalar_t,4,torch::RestrictPtrTraits,size_t>(),
@@ -379,7 +379,7 @@ void find_nearest_pt_cuda(
     const int threads = 1024;
     size_t state_size = pos.size(0) * pos.size(1);
     const dim3 blocks((state_size + threads - 1) / threads);
-    AT_DISPATCH_FLOATING_TYPES(pos.type(), "nearest_pt_cuda", ([&] {
+    AT_DISPATCH_FLOATING_TYPES(pos.scalar_type(), "nearest_pt_cuda", ([&] {
         nearest_pt_cuda_kernel<scalar_t><<<blocks, threads>>>(
             nearest_pt.packed_accessor<scalar_t,3,torch::RestrictPtrTraits,size_t>(),
             balls.packed_accessor<scalar_t,3,torch::RestrictPtrTraits,size_t>(),

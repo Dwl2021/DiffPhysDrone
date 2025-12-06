@@ -292,7 +292,7 @@ std::vector<torch::Tensor> run_forward_cuda(
 
     const int threads = R.size(0);
     const dim3 blocks(1);
-    AT_DISPATCH_FLOATING_TYPES(R.type(), "run_forward_cuda", ([&] {
+    AT_DISPATCH_FLOATING_TYPES(R.scalar_type(), "run_forward_cuda", ([&] {
         run_forward_cuda_kernel<scalar_t><<<blocks, threads>>>(
             R.packed_accessor<scalar_t,3,torch::RestrictPtrTraits,size_t>(),
             dg.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>(),
@@ -338,7 +338,7 @@ std::vector<torch::Tensor> run_backward_cuda(
 
     const int threads = R.size(0);
     const dim3 blocks(1);
-    AT_DISPATCH_FLOATING_TYPES(R.type(), "run_backward_cuda", ([&] {
+    AT_DISPATCH_FLOATING_TYPES(R.scalar_type(), "run_backward_cuda", ([&] {
         run_backward_cuda_kernel<scalar_t><<<blocks, threads>>>(
             R.packed_accessor<scalar_t,3,torch::RestrictPtrTraits,size_t>(),
             dg.packed_accessor<scalar_t,2,torch::RestrictPtrTraits,size_t>(),
@@ -371,7 +371,7 @@ torch::Tensor update_state_vec_cuda(
     const int threads = a_thr.size(0);
     const dim3 blocks(1);
     torch::Tensor R_new = torch::empty_like(R);
-    AT_DISPATCH_FLOATING_TYPES(a_thr.type(), "update_state_vec", ([&] {
+    AT_DISPATCH_FLOATING_TYPES(a_thr.scalar_type(), "update_state_vec", ([&] {
         update_state_vec_cuda_kernel<scalar_t><<<blocks, threads>>>(
             R_new.packed_accessor<scalar_t,3,torch::RestrictPtrTraits,size_t>(),
             R.packed_accessor<scalar_t,3,torch::RestrictPtrTraits,size_t>(),
