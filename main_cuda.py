@@ -267,7 +267,7 @@ for i in pbar:
         args.coef_speed * loss_speed + \
         args.coef_v_pred * loss_v_pred + \
         args.coef_collide * loss_collide + \
-        args.coef_ground_affinity * loss_ground_affinity
+        args.coef_ground_affinity + loss_ground_affinity
 
     # ==================== 第九部分：异常检测和优化 ====================
     # 检查损失是否为 NaN（通常表示训练不稳定或数值溢出）
@@ -345,7 +345,7 @@ for i in pbar:
             writer.add_figure('a_reals', fig_a, i + 1)
         # 每 10000 次迭代保存一次模型检查点
         if (i + 1) % 10000 == 0:
-            torch.save(model.state_dict(), f'single/checkpoint{i//10000:04d}.pth')
+            torch.save(model.state_dict(), f'checkpoint{i//10000:04d}.pth')
         # 每 25 次迭代记录一次指标到 TensorBoard
         if (i + 1) % 25 == 0:
             for k, v in scaler_q.items():
